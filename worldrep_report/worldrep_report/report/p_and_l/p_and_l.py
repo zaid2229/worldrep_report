@@ -86,8 +86,11 @@ def execute(filters=None):
     if gross_profit:
         data.append(gross_profit)
     
+    # Initialize total_expense_excluding_cogs to None or a default value
+    total_expense_excluding_cogs = None
+
     # Add expenses excluding COGS and Taxes, and calculate the total expense
-    if expenses_excluding_cogs and sum(flt(item.get("total", 0)) for item in expenses_excluding_cogs) > 0:
+    if expenses_excluding_cogs and sum(flt(item.get("total", 0)) > 0 for item in expenses_excluding_cogs):
         data.extend(expenses_excluding_cogs or [])
         
         # Calculate and display the total expenses excluding COGS and Taxes
@@ -95,8 +98,8 @@ def execute(filters=None):
         total_expense_value = sum(flt(item.get(period_list[-1].key, 0)) for item in expenses_excluding_cogs if item.get('indent') == 0)
         total_expense_excluding_cogs[period_list[-1].key] = total_expense_value
         data.append(total_expense_excluding_cogs)
-    
-    # Calculate "Profit from Operations" as Gross Profit - Total OPEX
+
+    # Ensure that total_expense_excluding_cogs is not None before using it
     if gross_profit and total_expense_excluding_cogs:
         profit_from_operations = {
             "account_name": _("Profit from Operations"),
@@ -108,6 +111,7 @@ def execute(filters=None):
         profit_from_operations_value = gross_profit[period_list[-1].key] - total_expense_excluding_cogs[period_list[-1].key]
         profit_from_operations[period_list[-1].key] = profit_from_operations_value
         data.append(profit_from_operations)
+
         
     # Add Taxes and Zakat section
     if taxes_zakat:
