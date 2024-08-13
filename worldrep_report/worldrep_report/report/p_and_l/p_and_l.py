@@ -26,16 +26,6 @@ def execute(filters=None):
         "Company", filters.company, "default_currency"
     )
 
-    period_list = get_period_list(
-        filters['from_fiscal_year'],
-        filters['to_fiscal_year'],
-        filters['period_start_date'],
-        filters['period_end_date'],
-        filters['filter_based_on'],
-        filters['periodicity'],
-        company=filters['company'],
-    )
-
     # Fetch data for Income, COGS, and Expenses using the custom function
     income = get_data_with_account_type(
         filters['company'],
